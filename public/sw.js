@@ -1,20 +1,6 @@
-const CACHE_NAME = 'legalmetro-v2';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/icon-192.svg',
-  '/icon-512.svg'
-];
+const CACHE_NAME = 'legalmetro-v3';
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS).catch(err => console.warn('Cache addAll warning:', err));
-    })
-  );
   self.skipWaiting();
 });
 
@@ -33,15 +19,33 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
+// Network-First Strategy to prevent white screens on new deployments
 self.addEventListener('fetch', (e) => {
+  // Only handle GET requests for same-origin
+  if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
   e.respondWith(
-    caches.match(e.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(e.request).catch(() => {
-        return caches.match('/index.html');
-      });
-    })
+    fetch(e.request)
+      .then((response) => {
+        // Clone & update cache if valid response
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(e.request, responseToCache);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // Fallback to cache if offline
+        return caches.match(e.request).then((cached) => {
+          if (cached) return cached;
+          if (e.request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('/index.html');
+          }
+        });
+      })
   );
 });
