@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthInspectionProvider, useAuthInspection } from './context/AuthInspectionContext';
 import MobileFrame from './components/MobileFrame';
+import SplashScreen from './components/SplashScreen';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -12,7 +13,7 @@ import ScanResult from './pages/ScanResult';
 import History from './pages/History';
 import Profile from './pages/Profile';
 
-// Route Guard Component
+// Protected Route Guard
 function ProtectedRoute({ children }) {
   const { officer } = useAuthInspection();
   if (!officer || !officer.isLoggedIn) {
@@ -21,9 +22,19 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+// Initial Redirect Helper
+function RootRedirect() {
+  const { officer } = useAuthInspection();
+  if (officer && officer.isLoggedIn) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return <Navigate to="/login" replace />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
@@ -48,19 +59,25 @@ function AppRoutes() {
       } />
 
       {/* Catch-all Fallback */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<RootRedirect />} />
     </Routes>
   );
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
     <AuthInspectionProvider>
-      <BrowserRouter>
-        <MobileFrame>
-          <AppRoutes />
-        </MobileFrame>
-      </BrowserRouter>
+      {showSplash ? (
+        <SplashScreen onFinish={() => setShowSplash(false)} />
+      ) : (
+        <BrowserRouter>
+          <MobileFrame>
+            <AppRoutes />
+          </MobileFrame>
+        </BrowserRouter>
+      )}
     </AuthInspectionProvider>
   );
 }

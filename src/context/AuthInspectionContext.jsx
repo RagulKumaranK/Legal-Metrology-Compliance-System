@@ -15,13 +15,13 @@ const DEFAULT_OFFICER = {
 };
 
 export function AuthInspectionProvider({ children }) {
-  // Officer auth state
+  // Officer auth state (defaults to null so login screen is required)
   const [officer, setOfficer] = useState(() => {
     const saved = localStorage.getItem('lm_officer_session');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    return DEFAULT_OFFICER;
+    return null;
   });
 
   // Registered users storage
