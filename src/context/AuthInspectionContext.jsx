@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { INITIAL_INSPECTIONS } from '../data/mockInspections';
+import { INITIAL_INSPECTIONS, DEMO_SCAN_QUEUE, UPLOADED_PRODUCT_TEMPLATE } from '../data/mockInspections';
 
 const AuthInspectionContext = createContext();
 
@@ -11,17 +11,17 @@ const DEFAULT_OFFICER = {
   phone: "+91 96765 43210",
   location: "New Delhi, India",
   role: "Enforcement Officer",
-  isLoggedIn: true
+  isLoggedIn: false
 };
 
 export function AuthInspectionProvider({ children }) {
-  // Officer auth state (defaults to null so login screen is required)
+  // Officer auth state
   const [officer, setOfficer] = useState(() => {
     const saved = localStorage.getItem('lm_officer_session');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    return null;
+    return DEFAULT_OFFICER;
   });
 
   // Registered users storage
@@ -41,20 +41,99 @@ export function AuthInspectionProvider({ children }) {
     ];
   });
 
-  // Inspections history state
+  // Inspections history state - Auto sync saved items with current DEMO_SCAN_QUEUE image URLs
   const [inspections, setInspections] = useState(() => {
     const saved = localStorage.getItem('lm_inspections');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed
+            .filter(i => i.name !== "Amul Gold Milk" && i.ocrExtracted?.productName !== "Amul Gold Pasteurised Full Cream Milk")
+            .map(item => {
+              const match = DEMO_SCAN_QUEUE.find(d => d.name.toLowerCase() === item.name.toLowerCase()) ||
+                            (item.name === UPLOADED_PRODUCT_TEMPLATE.name ? UPLOADED_PRODUCT_TEMPLATE : null);
+              if (match) {
+                return {
+                  ...match,
+                  ...item,
+                  status: match.status || item.status,
+                  complianceScore: match.complianceScore !== undefined ? match.complianceScore : item.complianceScore,
+                  checks: match.checks || item.checks,
+                  fontSizeAnalysis: match.fontSizeAnalysis || item.fontSizeAnalysis,
+                  ocrExtracted: match.ocrExtracted || item.ocrExtracted,
+                  violationsList: match.violationsList || item.violationsList,
+                  image: match.image || item.image,
+                  rawImage: match.rawImage || item.rawImage,
+                  processedImage: match.processedImage || item.processedImage
+                };
+              }
+              return item;
+            });
+        }
+      } catch (e) {}
     }
     return INITIAL_INSPECTIONS;
+  });
+
+  // Sequential scanning demo index
+  const [scanQueueIndex, setScanQueueIndex] = useState(() => {
+    const saved = localStorage.getItem('lm_scan_queue_index');
+    return saved ? parseInt(saved, 10) : 0;
   });
 
   // Current active scan flow state
   const [capturedImage, setCapturedImage] = useState(null);
   const [activeAnalysis, setActiveAnalysis] = useState(null);
 
-  // Save changes to localStorage
+  // Server Database Sync Effect (Initial fetch & 2s real-time poll)
+  useEffect(() => {
+    let isMounted = true;
+
+    async function syncWithServerDb() {
+      try {
+        const res = await fetch('/api/inspections');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            if (isMounted) {
+              setInspections(prev => {
+                if (JSON.stringify(prev) !== JSON.stringify(data)) {
+                  return data;
+                }
+                return prev;
+              });
+            }
+          } else if (data === null) {
+            // Seed server DB with initial inspections
+            await fetch('/api/inspections', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(INITIAL_INSPECTIONS)
+            });
+          }
+        }
+      } catch (e) {}
+    }
+
+    syncWithServerDb();
+    const interval = setInterval(syncWithServerDb, 2000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Save changes to localStorage & Server Database
+  useEffect(() => {
+    localStorage.setItem('lm_inspections', JSON.stringify(inspections));
+    fetch('/api/inspections', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(inspections)
+    }).catch(() => {});
+  }, [inspections]);
+
   useEffect(() => {
     if (officer) {
       localStorage.setItem('lm_officer_session', JSON.stringify(officer));
@@ -68,8 +147,8 @@ export function AuthInspectionProvider({ children }) {
   }, [registeredUsers]);
 
   useEffect(() => {
-    localStorage.setItem('lm_inspections', JSON.stringify(inspections));
-  }, [inspections]);
+    localStorage.setItem('lm_scan_queue_index', scanQueueIndex.toString());
+  }, [scanQueueIndex]);
 
   // Auth helper methods
   const login = (identifier, password) => {
@@ -92,7 +171,6 @@ export function AuthInspectionProvider({ children }) {
       return { success: true };
     }
 
-    // Default fallback check for demo
     if (identifier && password) {
       const session = {
         name: identifier.includes('@') ? identifier.split('@')[0] : identifier,
@@ -113,6 +191,7 @@ export function AuthInspectionProvider({ children }) {
 
   const loginWithBiometric = () => {
     const session = DEFAULT_OFFICER;
+    session.isLoggedIn = true;
     setOfficer(session);
     return { success: true };
   };
@@ -134,76 +213,55 @@ export function AuthInspectionProvider({ children }) {
     localStorage.removeItem('lm_officer_session');
   };
 
-  // Scanning flow methods
+  // Sequential Scan Simulation Trigger
+  const triggerNextScanSequence = (customImage = null, isUpload = false) => {
+    const baseProduct = isUpload ? UPLOADED_PRODUCT_TEMPLATE : DEMO_SCAN_QUEUE[scanQueueIndex % DEMO_SCAN_QUEUE.length];
+    const newId = `INS-2026-${String(inspections.length + 1).padStart(3, '0')}`;
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const newScannedProduct = {
+      ...baseProduct,
+      id: newId,
+      date: "05 Sep 2026",
+      time: timeStr || baseProduct.time,
+      rawTimestamp: new Date().toISOString(),
+      isNewScan: true,
+      rawImage: customImage || baseProduct.rawImage || baseProduct.image,
+      processedImage: baseProduct.processedImage || customImage || baseProduct.image,
+      image: customImage || baseProduct.image
+    };
+
+    setCapturedImage(customImage || baseProduct.rawImage || baseProduct.image);
+    setActiveAnalysis(newScannedProduct);
+    
+    // Automatically add to scanned products list/history
+    setInspections(prev => [newScannedProduct, ...prev]);
+    
+    // Increment index only for camera scans
+    if (!isUpload) {
+      setScanQueueIndex(prev => prev + 1);
+    }
+
+    return newScannedProduct;
+  };
+
   const setCapturedPhoto = (imageData) => {
     setCapturedImage(imageData);
   };
 
   const generateScanAnalysis = (productNameHint = "Scanned Commodity", imageBase64 = null) => {
-    const timestampDate = "05 Sep 2026";
-    const timestampTime = "10:32 AM";
-    const newId = `INS-2026-${String(inspections.length + 1).padStart(3, '0')}`;
+    if (activeAnalysis) {
+      return activeAnalysis;
+    }
+    return triggerNextScanSequence();
+  };
 
-    // Randomize slightly or create realistic non-compliant audit result
-    const isCompliant = Math.random() > 0.6;
-
-    const mockResult = isCompliant ? {
-      id: newId,
-      name: productNameHint || "Tata Salt Iodised 1kg",
-      category: "Grocery & Staples",
-      netQuantity: "1 kg",
-      manufacturer: "Tata Consumer Products Ltd.",
-      mrp: "₹28.00 (Incl. of all taxes)",
-      date: timestampDate,
-      time: timestampTime,
-      rawTimestamp: "2026-09-05T10:32:00",
-      status: "COMPLIANT",
-      complianceScore: 95,
-      checks: { total: 12, passed: 12, violations: 0, warnings: 0 },
-      violationsList: [],
-      ocrExtracted: {
-        productName: productNameHint || "Tata Salt Iodised",
-        netQty: "1 kg",
-        mrpText: "MRP Rs 28.00 (INCL. OF ALL TAXES)",
-        mfgDate: "01/09/2026",
-        countryOfOrigin: "Made in India",
-        customerCare: "1800 108 4444 / care@tataconsumer.com"
-      },
-      image: imageBase64 || capturedImage || "https://images.unsplash.com/photo-1626197031507-c170a045c697?auto=format&fit=crop&w=400&q=80"
-    } : {
-      id: newId,
-      name: productNameHint || "Tata Salt Iodised",
-      category: "Grocery & Staples",
-      netQuantity: "1 kg",
-      manufacturer: "Tata Consumer Products Ltd.",
-      mrp: "₹28.00 (Unverified font)",
-      date: timestampDate,
-      time: timestampTime,
-      rawTimestamp: "2026-09-05T10:32:00",
-      status: "NON-COMPLIANT",
-      complianceScore: 72,
-      checks: { total: 12, passed: 8, violations: 3, warnings: 1 },
-      violationsList: [
-        { id: 1, title: "MRP Declaration", desc: "MRP not declared on the product front panel." },
-        { id: 2, title: "Mandatory Declaration", desc: "Country of Origin is missing." },
-        { id: 3, title: "Readability", desc: "Text is not clearly readable / font height under 1.5mm." }
-      ],
-      ocrExtracted: {
-        productName: productNameHint || "Tata Salt Iodised 1kg",
-        netQty: "1 kg",
-        mrpText: "MRP: UNREADABLE / MISSING",
-        mfgDate: "02/09/2026",
-        countryOfOrigin: "NOT SPECIFIED",
-        customerCare: "care@tataconsumer.com"
-      },
-      image: imageBase64 || capturedImage || "https://images.unsplash.com/photo-1626197031507-c170a045c697?auto=format&fit=crop&w=400&q=80"
-    };
-
-    setActiveAnalysis(mockResult);
-
-    // Save to inspection list
-    setInspections(prev => [mockResult, ...prev]);
-    return mockResult;
+  const clearHistory = () => {
+    setInspections([]);
+    setScanQueueIndex(0);
+    localStorage.removeItem('lm_inspections');
+    localStorage.removeItem('lm_scan_queue_index');
   };
 
   return (
@@ -219,7 +277,10 @@ export function AuthInspectionProvider({ children }) {
       setCapturedPhoto,
       activeAnalysis,
       setActiveAnalysis,
-      generateScanAnalysis
+      generateScanAnalysis,
+      triggerNextScanSequence,
+      scanQueueIndex,
+      clearHistory
     }}>
       {children}
     </AuthInspectionContext.Provider>

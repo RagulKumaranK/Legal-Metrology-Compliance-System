@@ -1,96 +1,407 @@
-export const INITIAL_INSPECTIONS = [
+export const UPLOADED_PRODUCT_TEMPLATE = {
+  name: "Whole Wheat Atta",
+  category: "Packaged Foods",
+  netQuantity: "5 kg",
+  manufacturer: "Not visible / Not declared in captured area",
+  mrp: "Not visible",
+  date: "05 Sep 2026",
+  time: "Not available",
+  status: "REVIEW REQUIRED",
+  complianceScore: null,
+  processingTime: "18.4",
+  checks: {
+    total: 10,
+    passed: 4,
+    violations: 0,
+    warnings: 6
+  },
+
+  violationsList: [],
+
+  ocrExtracted: {
+    productName: "Whole Wheat Atta",
+    netQty: "5 kg",
+
+    mrpText: "MRP ₹ — value not visible",
+    mfgDate: "Not visible",
+    bestBefore: "Not visible",
+    unitSalePrice: "Not visible",
+
+    batchNo: "Not visible",
+
+    manufacturer:
+      "Not visible / Not clearly declared in captured area",
+
+    marketer:
+      "Agro Mark India Pvt. Ltd.",
+
+    marketerAddress:
+      "Office No. 205, 2nd Floor, Plot No. 4, Community Centre, Sector-15, Dwarka, New Delhi - 110075, India.",
+
+    countryOfOrigin:
+      "Not visible",
+
+    customerCare:
+      "Phone: +91 999001 1700 | Email: care@agromarkindia.com | Address: Office No. 205, 2nd Floor, Plot No. 4, Community Centre, Sector-15, Dwarka, New Delhi - 110075, India."
+  },
+
+  fontSizeAnalysis: [
+    {
+      field: "Product / Commodity Name",
+      value: "Whole Wheat Atta",
+      measuredSize: "Not reliably measurable",
+      requiredSize: "As per applicable Rule 7/Table-I",
+      status: "REVIEW",
+      rule: "Rule 6(1)(b)"
+    },
+
+    {
+      field: "Net Quantity",
+      value: "5 kg",
+      measuredSize: "Not reliably measurable",
+      requiredSize: "As per applicable Rule 7/Table-I",
+      status: "PASS",
+      rule: "Rule 6(1)(b)"
+    },
+
+    {
+      field: "MRP Declaration",
+      value: "MRP ₹ (incl. of all taxes) — value not visible",
+      measuredSize: "Not measurable",
+      requiredSize: "Applicable declaration requirements",
+      status: "REVIEW",
+      rule: "Rule 6(1)(e)"
+    },
+
+    {
+      field: "Mfg Date / Packed Date",
+      value: "MFD — value not visible",
+      measuredSize: "Not measurable",
+      requiredSize: "Applicable declaration requirements",
+      status: "REVIEW",
+      rule: "Rule 6(1)(d)"
+    },
+
+    {
+      field: "Best Before / Use By",
+      value: "USE BY — value not visible",
+      measuredSize: "Not measurable",
+      requiredSize: "Applicable where applicable",
+      status: "REVIEW",
+      rule: "Rule 6(1)(d)"
+    },
+
+    {
+      field: "Unit Sale Price",
+      value: "Not visible",
+      measuredSize: "Not measurable",
+      requiredSize: "Applicable unit sale price declaration",
+      status: "REVIEW",
+      rule: "Rule 6(1)(r)"
+    },
+
+    {
+      field: "Batch / Lot Number",
+      value: "Not visible",
+      measuredSize: "Not measurable",
+      requiredSize: "Where applicable",
+      status: "REVIEW",
+      rule: "Rule 6(1)(e)"
+    },
+
+    {
+      field: "Manufacturer / Packer Details",
+      value: "Not clearly visible",
+      measuredSize: "Not measurable",
+      requiredSize: "Applicable declaration",
+      status: "REVIEW",
+      rule: "Rule 6(1)(a)"
+    },
+
+    {
+      field: "Consumer Care",
+      value:
+        "Phone: +91 999001 1700 | Email: care@agromarkindia.com",
+      measuredSize: "Not reliably measurable",
+      requiredSize: "Applicable declaration",
+      status: "PASS",
+      rule: "Rule 6(1)(n)"
+    },
+
+    {
+      field: "Net Weight Unit",
+      value: "5 kg",
+      measuredSize: "Not reliably measurable",
+      requiredSize: "Standard metric unit",
+      status: "PASS",
+      rule: "Rule 6(1)(b)"
+    }
+  ],
+  rawImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788145146/non-compliance_hm9uy7.jpg",
+  processedImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788148649/processed_n14f8i.png",
+  image: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788148649/processed_n14f8i.png"
+};
+
+export const DEMO_SCAN_QUEUE = [
   {
-    id: "INS-2026-001",
-    name: "Amul Gold Milk",
-    category: "Dairy & Beverages",
-    netQuantity: "500 ml",
-    manufacturer: "Gujarat Cooperative Milk Marketing Federation Ltd.",
-    mrp: "₹34.00 (Incl. of all taxes)",
+    name: "Choco-filled Wafer Stick",
+    category: "Packaged Foods",
+    netQuantity: "45 g",
+    manufacturer: "Yummy Foodspecialities Pvt Ltd.",
+    mrp: "₹30.00 (Incl. of all taxes)",
     date: "05 Sep 2026",
-    time: "10:30 AM",
-    rawTimestamp: "2026-09-05T10:30:00",
+    time: "05:51 PM",
     status: "COMPLIANT",
     complianceScore: 100,
-    checks: { total: 12, passed: 12, violations: 0, warnings: 0 },
+    processingTime: "18.4",
+    checks: { total: 10, passed: 10, violations: 0, warnings: 0 },
     violationsList: [],
     ocrExtracted: {
-      productName: "Amul Gold Pasteurised Full Cream Milk",
-      netQty: "500 ml",
-      mrpText: "MRP Rs 34.00 (INCL. OF ALL TAXES)",
-      mfgDate: "04/09/2026",
+      productName: "Choco-filled Wafer Stick",
+      netQty: "45 g",
+      mrpText: "MRP ₹30.00 (INCL. OF ALL TAXES)",
+      mfgDate: "JUL 2026",
+      bestBefore: "24 JUL 2027",
+      unitSalePrice: "₹0.67/g",
+      manufacturer: "Yummy Foodspecialities Pvt Ltd.",
       countryOfOrigin: "India",
-      customerCare: "1800 258 3333 / customercare@amul.coop"
+      customerCare: "Phone + Email + Address"
     },
-    image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=400&q=80"
+    fontSizeAnalysis: [
+      {
+        field: "Product Name",
+        value: "Choco-filled Wafer Stick",
+        measuredSize: "3.5 mm",
+        requiredSize: "≥ 2.0 mm",
+        status: "PASS",
+        rule: "Rule 9(1)"
+      },
+
+      {
+        field: "Net Quantity",
+        value: "45 g",
+        measuredSize: "3.2 mm",
+        requiredSize: "≥ 3.0 mm",
+        status: "PASS",
+        rule: "Rule 7 & 9"
+      },
+
+      {
+        field: "MRP Declaration",
+        value: "MRP ₹30.00 (INCL. OF ALL TAXES)",
+        measuredSize: "2.1 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(f)"
+      },
+
+      {
+        field: "Mfg Date / Batch",
+        value: "JUL 2026",
+        measuredSize: "1.8 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(e)"
+      },
+
+      {
+        field: "Best Before Date",
+        value: "24 JUL 2027",
+        measuredSize: "1.8 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(e)"
+      },
+
+      {
+        field: "Unit Sale Price",
+        value: "₹0.67/g",
+        measuredSize: "2.0 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(n)"
+      },
+
+      {
+        field: "Manufacturer Details",
+        value: "Yummy Foodspecialities Pvt Ltd.",
+        measuredSize: "2.4 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(a)"
+      },
+
+      {
+        field: "Country of Origin",
+        value: "India",
+        measuredSize: "1.9 mm",
+        requiredSize: "N/A",
+        status: "N/A",
+        rule: "Not applicable for Indian-manufactured product"
+      },
+
+      {
+        field: "Consumer Care",
+        value: "Phone: 1800-258-5758 Email: consumer@mayoraindia.com Address: Same as Marketed By address Mayora India Private Limited, Survey No. 58, Gundlapochampally Village, Medchal, Medchal Malkajgiri, Telangana – 500014, India.",
+        measuredSize: "1.6 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(2)"
+      }
+
+    ],
+    rawImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788092955/raw1_sze4kx.jpg",
+    processedImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788092960/original1_dxvuhf.png",
+    image: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788092955/raw1_sze4kx.jpg"
   },
+  UPLOADED_PRODUCT_TEMPLATE,
   {
-    id: "INS-2026-002",
-    name: "Britannia Biscuits",
-    category: "Packaged Snacks",
-    netQuantity: "250 g",
-    manufacturer: "Britannia Industries Limited",
-    mrp: "₹30.00",
+    // 1. Basic Product Info
+    name: "Tomato Ketchup",
+    category: "Packaged Foods",
+    netQuantity: "75 g",
+    manufacturer: "Nestlé India Ltd.",
+    mrp: "Not visible — refer to side crimp",
     date: "05 Sep 2026",
-    time: "09:15 AM",
-    rawTimestamp: "2026-09-05T09:15:00",
-    status: "NON-COMPLIANT",
-    complianceScore: 58,
-    checks: { total: 12, passed: 7, violations: 3, warnings: 2 },
-    violationsList: [
-      { id: 1, title: "MRP Declaration", desc: "Font height of MRP text is below 1.5mm mandatory requirement (Rule 9)." },
-      { id: 2, title: "Mandatory Declaration", desc: "Country of Origin declaration missing on secondary package." },
-      { id: 3, title: "Customer Care Details", desc: "Email ID not provided in consumer grievance address." }
-    ],
+    time: "05:51 PM",
+
+    // 2. Audit Verdict & Score
+    status: "WARNING",       // Options: "COMPLIANT" | "NON-COMPLIANT" | "PENDING"
+    complianceScore: 70,     // Score (0 to 100)
+    processingTime: "18.7",  // Countdown audit seconds
+    checks: { total: 10, passed: 6, violations: 0, warnings: 3 },
+
+    // 3. Infractions List
+    violationsList: [],
+
+    // 4. Extracted OCR Text Declarations
     ocrExtracted: {
-      productName: "Britannia Good Day Butter Biscuits",
-      netQty: "250 g",
-      mrpText: "MRP Rs 30.00",
-      mfgDate: "01/09/2026",
-      countryOfOrigin: "NOT FOUND",
-      customerCare: "Call 1800 425 4444"
+      productName: "Tomato Ketchup",
+      netQty: "75 g",
+      mrpText: "Not visible — instructed to refer to side crimp",
+      mfgDate: "Not visible — instructed to refer to side crimp",
+      countryOfOrigin: "India",
+      lotBatch: "Not clearly visible",
+      manufacturer:
+        "Nestlé India Ltd., A) Moga – Ferozepur Road, Moga – 142001, Punjab, India",
+      additionalManufacturingLocation:
+        "B) Industrial Estate, Bicholim Taluka, Goa – 403504, India",
+      marketer: "Nestlé India Ltd.",
+      marketerAddress:
+        "100/101, World Trade Centre, Barakhamba Lane, New Delhi – 110001",
+      customerCare:
+        "Nestlé Consumer Care | 1800 103 1947 | india@in.nestle.com"
     },
-    image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80"
+
+    // 5. Rule 9 Measured Text Size Analysis (in mm)
+    fontSizeAnalysis: [
+      {
+        field: "Product Name",
+        value: "Tomato Ketchup",
+        measuredSize: "3.2 mm",
+        requiredSize: "≥ 2.0 mm",
+        status: "PASS",
+        rule: "Rule 9(1)"
+      },
+      {
+        field: "Net Quantity",
+        value: "75 g",
+        measuredSize: "3.1 mm",
+        requiredSize: "≥ 3.0 mm",
+        status: "PASS",
+        rule: "Rule 7 & 9"
+      },
+      {
+        field: "MRP Declaration",
+        value: "Not visible — refer to side crimp",
+        measuredSize: "N/A",
+        requiredSize: "Must be declared",
+        status: "WARNING",
+        rule: "Rule 6(1)(f)"
+      },
+      {
+        field: "Mfg Date / Use By",
+        value: "Not visible — refer to side crimp",
+        measuredSize: "N/A",
+        requiredSize: "Must be declared",
+        status: "WARNING",
+        rule: "Rule 6(1)(e)"
+      },
+      {
+        field: "Lot / Batch Number",
+        value: "Not clearly visible",
+        measuredSize: "N/A",
+        requiredSize: "Must be declared",
+        status: "WARNING",
+        rule: "Rule 6(1)(d)"
+      },
+      {
+        field: "Manufacturer Details",
+        value:
+          "Nestlé India Ltd., Moga – Ferozepur Road, Moga – 142001, Punjab, India",
+        measuredSize: "2.3 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(a)"
+      },
+      {
+        field: "Additional Manufacturing Location",
+        value:
+          "Industrial Estate, Bicholim Taluka, Goa – 403504, India",
+        measuredSize: "2.0 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(a)"
+      },
+      {
+        field: "Marketer Details",
+        value:
+          "Nestlé India Ltd., 100/101, World Trade Centre, Barakhamba Lane, New Delhi – 110001",
+        measuredSize: "2.0 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(1)(a)"
+      },
+      {
+        field: "Consumer Care",
+        value:
+          "Nestlé Consumer Care | 1800 103 1947 | india@in.nestle.com",
+        measuredSize: "1.7 mm",
+        requiredSize: "≥ 1.5 mm",
+        status: "PASS",
+        rule: "Rule 6(2)"
+      },
+      {
+        field: "Country of Origin",
+        value: "India",
+        measuredSize: "N/A",
+        requiredSize: "N/A",
+        status: "N/A",
+        rule: "Not applicable / Indian-manufactured product"
+      }
+    ],
+
+    // 6. Image URLs (Taken Photo & Processed OCR Frame)
+    rawImage:
+      "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098390/original2_h8vvjg.png",
+
+    processedImage:
+      "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098390/original2_h8vvjg.png",
+
+    image:
+      "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098390/original2_h8vvjg.png"
   },
   {
-    id: "INS-2026-003",
-    name: "Tata Salt Iodised",
-    category: "Grocery & Staples",
-    netQuantity: "1 kg",
-    manufacturer: "Tata Consumer Products Limited",
-    mrp: "₹28.00 (Incl. of all taxes)",
-    date: "04 Sep 2026",
-    time: "05:45 PM",
-    rawTimestamp: "2026-09-04T17:45:00",
-    status: "NON-COMPLIANT",
-    complianceScore: 72,
-    checks: { total: 12, passed: 8, violations: 3, warnings: 1 },
-    violationsList: [
-      { id: 1, title: "MRP Declaration", desc: "MRP not declared clearly on the front/back display panel." },
-      { id: 2, title: "Mandatory Declaration", desc: "Country of Origin statement is missing." },
-      { id: 3, title: "Readability", desc: "Batch & Date text is blurred/not clearly readable." }
-    ],
-    ocrExtracted: {
-      productName: "Tata Salt Vacuum Evaporated Iodised Salt",
-      netQty: "1 kg",
-      mrpText: "MRP: UNREADABLE",
-      mfgDate: "AUG 2026",
-      countryOfOrigin: "MISSING",
-      customerCare: "customercare@tataconsumer.com"
-    },
-    image: "https://images.unsplash.com/photo-1626197031507-c170a045c697?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: "INS-2026-004",
     name: "Surf Excel Easy Wash",
     category: "Household Cleaning",
     netQuantity: "2 kg",
     manufacturer: "Hindustan Unilever Limited",
     mrp: "₹240.00 (Incl. of all taxes)",
-    date: "03 Sep 2026",
-    time: "04:20 PM",
-    rawTimestamp: "2026-09-03T16:20:00",
+    date: "05 Sep 2026",
+    time: "11:05 AM",
     status: "COMPLIANT",
     complianceScore: 98,
+    processingTime: "16.8",
     checks: { total: 12, passed: 12, violations: 0, warnings: 0 },
     violationsList: [],
     ocrExtracted: {
@@ -101,23 +412,31 @@ export const INITIAL_INSPECTIONS = [
       countryOfOrigin: "Made in India",
       customerCare: "1800 102 2221 / lever.care@unilever.com"
     },
-    image: "https://images.unsplash.com/photo-1585421514738-01798e348b17?auto=format&fit=crop&w=400&q=80"
+    fontSizeAnalysis: [
+      { field: "Product Name", value: "Surf Excel Easy Wash Detergent Powder", measuredSize: "4.2 mm", requiredSize: "≥ 2.0 mm", status: "PASS", rule: "Rule 9(1)" },
+      { field: "Net Quantity", value: "2 kg", measuredSize: "3.8 mm", requiredSize: "≥ 3.0 mm", status: "PASS", rule: "Rule 7 & 9" },
+      { field: "MRP Declaration", value: "MRP Rs 240.00 (INCL. OF ALL TAXES)", measuredSize: "2.3 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(f)" },
+      { field: "Mfg Date / Batch", value: "28/08/2026", measuredSize: "1.9 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(e)" },
+      { field: "Country of Origin", value: "Made in India", measuredSize: "2.1 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(b)" }
+    ],
+    rawImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098390/original2_h8vvjg.png",
+    processedImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098390/original2_h8vvjg.png",
+    image: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098390/original2_h8vvjg.png"
   },
   {
-    id: "INS-2026-005",
     name: "Parle-G Biscuits",
     category: "Packaged Snacks",
     netQuantity: "120 g",
     manufacturer: "Parle Products Pvt Ltd.",
     mrp: "₹10.00",
-    date: "02 Sep 2026",
-    time: "11:10 AM",
-    rawTimestamp: "2026-09-02T11:10:00",
+    date: "05 Sep 2026",
+    time: "11:40 AM",
     status: "NON-COMPLIANT",
     complianceScore: 64,
+    processingTime: "27.5",
     checks: { total: 12, passed: 7, violations: 4, warnings: 1 },
     violationsList: [
-      { id: 1, title: "Net Quantity Display", desc: "Font size for '120 g' is smaller than standard 3mm requirement (Rule 7)." },
+      { id: 1, title: "Net Quantity Display", desc: "Font size for '120 g' is 2.1mm, smaller than standard 3.0mm requirement (Rule 7)." },
       { id: 2, title: "Unit Representation", desc: "Symbol 'gm' used instead of standard 'g'." },
       { id: 3, title: "Consumer Helpline", desc: "Telephone number missing from contact details." }
     ],
@@ -129,20 +448,63 @@ export const INITIAL_INSPECTIONS = [
       countryOfOrigin: "India",
       customerCare: "cs@parle.biz"
     },
-    image: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=400&q=80"
+    fontSizeAnalysis: [
+      { field: "Product Name", value: "Parle-G Original Glucose Biscuits", measuredSize: "3.1 mm", requiredSize: "≥ 2.0 mm", status: "PASS", rule: "Rule 9(1)" },
+      { field: "Net Quantity", value: "120 gm", measuredSize: "2.1 mm", requiredSize: "≥ 3.0 mm", status: "FAIL", rule: "Rule 7 Violation" },
+      { field: "MRP Declaration", value: "MRP Rs 10.00", measuredSize: "1.6 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(f)" },
+      { field: "Mfg Date / Batch", value: "25/08/2026", measuredSize: "1.7 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(e)" }
+    ],
+    rawImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098743/Parle-G_Biscuits_ufgbfl.jpg",
+    processedImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098743/Parle-G_Biscuits_ufgbfl.jpg",
+    image: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098743/Parle-G_Biscuits_ufgbfl.jpg"
   },
   {
-    id: "INS-2026-006",
+    name: "Britannia Biscuits",
+    category: "Packaged Snacks",
+    netQuantity: "250 g",
+    manufacturer: "Britannia Industries Limited",
+    mrp: "₹30.00",
+    date: "05 Sep 2026",
+    time: "09:15 AM",
+    status: "NON-COMPLIANT",
+    complianceScore: 58,
+    processingTime: "24.1",
+    checks: { total: 12, passed: 7, violations: 3, warnings: 2 },
+    violationsList: [
+      { id: 1, title: "MRP Declaration Font Size", desc: "Font height of MRP text is 1.1mm, below 1.5mm mandatory height (Rule 9)." },
+      { id: 2, title: "Mandatory Declaration", desc: "Country of Origin declaration missing on package." },
+      { id: 3, title: "Customer Care Details", desc: "Email ID missing from consumer grievance address." }
+    ],
+    ocrExtracted: {
+      productName: "Britannia Good Day Butter Biscuits",
+      netQty: "250 g",
+      mrpText: "MRP Rs 30.00",
+      mfgDate: "01/09/2026",
+      countryOfOrigin: "NOT FOUND",
+      customerCare: "Call 1800 425 4444"
+    },
+    fontSizeAnalysis: [
+      { field: "Product Name", value: "Britannia Good Day Butter Biscuits", measuredSize: "3.2 mm", requiredSize: "≥ 2.0 mm", status: "PASS", rule: "Rule 9(1)" },
+      { field: "Net Quantity", value: "250 g", measuredSize: "3.1 mm", requiredSize: "≥ 3.0 mm", status: "PASS", rule: "Rule 7 & 9" },
+      { field: "MRP Declaration", value: "MRP Rs 30.00", measuredSize: "1.1 mm", requiredSize: "≥ 1.5 mm", status: "FAIL", rule: "Rule 9 Violation" },
+      { field: "Mfg Date / Batch", value: "01/09/2026", measuredSize: "1.6 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(e)" },
+      { field: "Country of Origin", value: "NOT FOUND", measuredSize: "0.0 mm", requiredSize: "≥ 1.5 mm", status: "FAIL", rule: "Rule 6(1)(b) Missing" }
+    ],
+    rawImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098742/Britannia_Biscuits_djp4ai.jpg",
+    processedImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098742/Britannia_Biscuits_djp4ai.jpg",
+    image: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098742/Britannia_Biscuits_djp4ai.jpg"
+  },
+  {
     name: "Dabur Red Paste",
     category: "Personal Care",
     netQuantity: "200 g",
     manufacturer: "Dabur India Limited",
     mrp: "₹115.00 (Incl. of all taxes)",
-    date: "01 Sep 2026",
-    time: "02:15 PM",
-    rawTimestamp: "2026-09-01T14:15:00",
+    date: "05 Sep 2026",
+    time: "12:15 PM",
     status: "PENDING",
     complianceScore: 82,
+    processingTime: "19.2",
     checks: { total: 12, passed: 10, violations: 1, warnings: 1 },
     violationsList: [
       { id: 1, title: "Verification Pending", desc: "Secondary barcode requires central laboratory verification." }
@@ -155,9 +517,19 @@ export const INITIAL_INSPECTIONS = [
       countryOfOrigin: "India",
       customerCare: "1800 103 1644 / daburcare@dabur.com"
     },
-    image: "https://images.unsplash.com/photo-1559563458-527698bf5295?auto=format&fit=crop&w=400&q=80"
+    fontSizeAnalysis: [
+      { field: "Product Name", value: "Dabur Red Ayurvedic Toothpaste", measuredSize: "3.4 mm", requiredSize: "≥ 2.0 mm", status: "PASS", rule: "Rule 9(1)" },
+      { field: "Net Quantity", value: "200 g", measuredSize: "3.3 mm", requiredSize: "≥ 3.0 mm", status: "PASS", rule: "Rule 7 & 9" },
+      { field: "MRP Declaration", value: "MRP Rs 115.00 (INCL. OF ALL TAXES)", measuredSize: "2.0 mm", requiredSize: "≥ 1.5 mm", status: "PASS", rule: "Rule 6(1)(f)" }
+    ],
+    rawImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098743/Dabur_Red_Paste_voyxlj.webp",
+    processedImage: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098743/Dabur_Red_Paste_voyxlj.webp",
+    image: "https://res.cloudinary.com/dckqgzfes/image/upload/v1788098743/Dabur_Red_Paste_voyxlj.webp"
   }
 ];
+
+// Initial history starts with demo scan items
+export const INITIAL_INSPECTIONS = DEMO_SCAN_QUEUE;
 
 export const DEMO_RULE_DESCRIPTIONS = [
   { rule: "Rule 6(1)(a)", name: "Name and Address of Manufacturer/Packer", mandatory: true },

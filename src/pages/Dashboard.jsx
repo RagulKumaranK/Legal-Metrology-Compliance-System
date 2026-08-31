@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Scan, FileText, ShieldCheck, AlertOctagon, Clock, ChevronRight } from 'lucide-react';
+import { Scan, Calendar, FileCheck, CheckCircle2, AlertOctagon, Clock, ArrowRight } from 'lucide-react';
 import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
 import { useAuthInspection } from '../context/AuthInspectionContext';
@@ -9,146 +9,162 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { officer, inspections, setActiveAnalysis } = useAuthInspection();
 
-  // Metrics computation from inspections list
-  const totalCount = inspections.length;
-  const compliantCount = inspections.filter(i => i.status === 'COMPLIANT').length;
-  const nonCompliantCount = inspections.filter(i => i.status === 'NON-COMPLIANT').length;
-  const pendingCount = inspections.filter(i => i.status === 'PENDING').length;
+  const displayList = inspections && inspections.length > 0 ? inspections : [];
+  const totalCount = displayList.length;
+  const compliantCount = displayList.filter(i => i.status === 'COMPLIANT').length;
+  const nonCompliantCount = displayList.filter(i => i.status === 'NON-COMPLIANT' || i.status === 'REVIEW REQUIRED').length;
+  const pendingCount = displayList.filter(i => i.status === 'PENDING' || i.status === 'REVIEW').length;
 
-  const recentInspections = inspections.slice(0, 4);
+  const recentInspections = displayList.slice(0, 5);
 
   const handleOpenInspection = (item) => {
-    setActiveAnalysis(item);
+    setActiveAnalysis({ ...item, isNewScan: false });
     navigate('/scan-result');
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 text-slate-900 animate-in fade-in duration-300">
-      
-      {/* Top Bar Header */}
+    <div className="flex-1 flex flex-col bg-slate-50 text-slate-900 font-sans antialiased animate-in fade-in duration-200 min-h-screen">
+
       <Header />
 
-      {/* Main Content Body */}
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+      {/* Main Dashboard Content */}
+      <div className="flex-1 p-5 pb-24 space-y-4 overflow-y-auto">
         
-        {/* Today's Overview Banner Card */}
-        <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-900 text-white rounded-2xl p-4 shadow-xl relative overflow-hidden border border-blue-900/40">
-          
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-sm font-bold tracking-tight">Today's Overview</h2>
-            <span className="text-[11px] font-semibold bg-white/10 px-2.5 py-0.5 rounded-full text-slate-200 backdrop-blur-sm border border-white/10 font-mono">
-              05 Sep 2026
-            </span>
-          </div>
-
-          {/* 4 Stats Grid */}
-          <div className="grid grid-cols-2 gap-2.5">
-            
-            {/* Total Inspections */}
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-blue-500/20 text-blue-300 shrink-0">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-[10px] text-slate-300 font-medium leading-none">Total Inspections</p>
-                <p className="text-xl font-black text-white mt-1">{totalCount}</p>
-              </div>
-            </div>
-
-            {/* Compliant */}
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-[10px] text-slate-300 font-medium leading-none">Compliant</p>
-                <p className="text-xl font-black text-white mt-1">{compliantCount}</p>
-              </div>
-            </div>
-
-            {/* Non-Compliant */}
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-rose-500/20 text-rose-400 shrink-0">
-                <AlertOctagon className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-[10px] text-slate-300 font-medium leading-none">Non-Compliant</p>
-                <p className="text-xl font-black text-white mt-1">{nonCompliantCount}</p>
-              </div>
-            </div>
-
-            {/* Pending */}
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
-                <Clock className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-[10px] text-slate-300 font-medium leading-none">Pending</p>
-                <p className="text-xl font-black text-white mt-1">{pendingCount}</p>
-              </div>
-            </div>
-
+        {/* Officer Greeting Header */}
+        <div className="space-y-1">
+          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Good Morning, {officer?.name || "Officer Sharma"}
+          </h2>
+          <div className="flex items-center gap-2 text-xs font-mono font-medium text-slate-600 pt-0.5">
+            <Calendar className="w-4 h-4 text-slate-500" />
+            <span>05 Sep 2026</span>
           </div>
         </div>
 
-        {/* Large Scan Product Primary Action Button */}
+        {/* Primary SCAN COMMODITY LABEL CTA */}
         <button
           onClick={() => navigate('/scan')}
-          className="w-full py-4 px-6 bg-blue-900 hover:bg-blue-950 text-white rounded-2xl shadow-xl border border-blue-800 flex items-center justify-center gap-3 transition-all active:scale-[0.98] group"
+          className="w-full py-3.5 bg-[#0a0f1d] hover:bg-slate-900 text-white font-bold rounded-xl text-xs uppercase tracking-widest shadow-md flex items-center justify-center gap-2.5 transition-all active:scale-[0.99]"
         >
-          <div className="p-2 rounded-xl bg-white/10 text-white group-hover:scale-110 transition-transform">
-            <Scan className="w-6 h-6 stroke-[2.5]" />
-          </div>
-          <span className="text-sm font-bold tracking-wide uppercase">Scan Product</span>
+          <Scan className="w-4 h-4 text-white" />
+          <span>SCAN COMMODITY LABEL</span>
         </button>
 
-        {/* Recent Inspections Header & List */}
-        <div>
-          <div className="flex justify-between items-center mb-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Recent Inspections</h3>
-            <Link to="/history" className="text-xs font-bold text-blue-900 hover:underline">
-              View All
+        {/* 2x2 Operational Statistics Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          
+          {/* Card 1: Total Inspections */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-600 leading-tight">Total<br />Inspections</span>
+              <div className="p-2 rounded-xl bg-blue-100/70 text-blue-700 shrink-0">
+                <FileCheck className="w-4 h-4" />
+              </div>
+            </div>
+            <span className="text-2xl font-extrabold text-slate-900 mt-2 font-mono">{totalCount}</span>
+          </div>
+
+          {/* Card 2: Compliant */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-600 leading-tight">Compliant</span>
+              <div className="p-2 rounded-xl bg-blue-100/70 text-blue-700 shrink-0">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+            </div>
+            <span className="text-2xl font-extrabold text-slate-900 mt-2 font-mono">{compliantCount}</span>
+          </div>
+
+          {/* Card 3: Non-Compliant */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-600 leading-tight">Non-Compliant</span>
+              <div className="p-2 rounded-xl bg-rose-100/70 text-rose-700 shrink-0">
+                <AlertOctagon className="w-4 h-4" />
+              </div>
+            </div>
+            <span className="text-2xl font-extrabold text-rose-600 mt-2 font-mono">{nonCompliantCount}</span>
+          </div>
+
+          {/* Card 4: Pending */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-600 leading-tight">Pending</span>
+              <div className="p-2 rounded-xl bg-blue-100/70 text-blue-700 shrink-0">
+                <Clock className="w-4 h-4" />
+              </div>
+            </div>
+            <span className="text-2xl font-extrabold text-slate-600 mt-2 font-mono">{pendingCount}</span>
+          </div>
+
+        </div>
+
+        {/* Recent Audit Trail Section */}
+        <div className="space-y-3 pt-2">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Recent Audit Trail</h3>
+            <Link to="/history" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+              <span>View All</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="space-y-2.5">
-            {recentInspections.map((item) => {
-              const isCompliant = item.status === 'COMPLIANT';
-              const isNonCompliant = item.status === 'NON-COMPLIANT';
+          {/* Audit Table Container */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            
+            {/* Header */}
+            <div className="bg-blue-50/80 px-4 py-2.5 border-b border-blue-100 flex justify-between items-center text-xs font-bold text-slate-700">
+              <span>Commodity</span>
+              <span>Status</span>
+            </div>
 
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => handleOpenInspection(item)}
-                  className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between hover:border-blue-300 transition-all cursor-pointer active:scale-[0.99]"
-                >
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
-                      className="w-12 h-12 rounded-xl object-cover border border-slate-100 bg-slate-100 shrink-0" 
-                    />
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-900 leading-tight">{item.name}</h4>
-                      <p className="text-[11px] text-slate-500 font-mono mt-0.5">{item.date} • {item.time}</p>
+            {/* Rows */}
+            <div className="divide-y divide-slate-100">
+              {recentInspections.length > 0 ? (
+                recentInspections.map((item) => {
+                  const isCompliant = item.status === 'COMPLIANT';
+                  const isNonCompliant = item.status === 'NON-COMPLIANT';
+
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => handleOpenInspection(item)}
+                      className="px-4 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer active:bg-slate-100"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-10 h-10 rounded-lg object-contain bg-slate-50 border border-slate-200 p-0.5 shrink-0"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://res.cloudinary.com/dckqgzfes/image/upload/v1788092960/original1_dxvuhf.png';
+                          }}
+                        />
+                        <span className="text-xs font-bold text-slate-900 truncate">{item.name}</span>
+                      </div>
+
+                      <div className="shrink-0">
+                        <span className={`text-[11px] font-medium px-3 py-1 rounded-full border transition-all ${
+                          isCompliant
+                            ? 'bg-blue-100/80 text-blue-700 border-blue-200'
+                            : isNonCompliant
+                              ? 'bg-rose-100/80 text-rose-700 border-rose-200'
+                              : 'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}>
+                          {isCompliant ? 'Compliant' : isNonCompliant ? 'Non-Compliant' : 'Pending'}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border uppercase tracking-wider ${
-                      isCompliant 
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                        : isNonCompliant 
-                          ? 'bg-rose-50 text-rose-700 border-rose-200' 
-                          : 'bg-amber-50 text-amber-700 border-amber-200'
-                    }`}>
-                      {item.status}
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-slate-400" />
-                  </div>
+                  );
+                })
+              ) : (
+                <div className="p-6 text-center text-xs text-slate-500">
+                  No recent audit records found.
                 </div>
-              );
-            })}
+              )}
+            </div>
+
           </div>
         </div>
 

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Settings, Shield, Mail, Phone, MapPin, Key, Info, LogOut, ChevronRight, Check } from 'lucide-react';
+import {
+  User, Settings as SettingsIcon, Shield, Mail, Phone, MapPin, Key, Info, LogOut, ChevronRight, Check, Briefcase
+} from 'lucide-react';
 import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
 import { useAuthInspection } from '../context/AuthInspectionContext';
+import officerImg from '../assets/officer.png';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -22,125 +25,146 @@ export default function Profile() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 text-slate-900 animate-in fade-in duration-300">
-      
-      {/* Header */}
-      <Header 
-        title="Profile" 
-        rightAction={
-          <button 
-            onClick={() => showToast('App Settings opened')}
-            className="p-2 rounded-xl bg-slate-800 text-slate-200 hover:text-white hover:bg-slate-700 transition-colors"
-            aria-label="Settings"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
-        }
-      />
+    <div className="flex-1 flex flex-col bg-[#f4f7fc] text-slate-900 font-sans antialiased animate-in fade-in duration-200 min-h-screen">
 
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-        
+      <Header />
+
+      <div className="flex-1 p-4 pb-24 space-y-4 overflow-y-auto">
+
         {toastMsg && (
-          <div className="p-3 bg-blue-900 text-white text-xs rounded-xl font-medium shadow-md flex items-center gap-2 animate-in fade-in">
-            <Check className="w-4 h-4 text-emerald-400" />
+          <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl font-bold flex items-center gap-2 shadow-sm animate-in fade-in">
+            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{toastMsg}</span>
           </div>
         )}
 
-        {/* User Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center">
-          <div className="w-20 h-20 bg-slate-100 rounded-full mx-auto flex items-center justify-center border-2 border-blue-900 text-slate-400 mb-3 shadow-inner">
-            <User className="w-10 h-10 text-slate-500" />
+        {/* Profile Card Header Box */}
+        <div className="bg-[#eef4ff] p-6 rounded-2xl border border-blue-100 text-center space-y-3 shadow-xs">
+
+          {/* Avatar Photo Frame */}
+          <div className="relative w-24 h-24 mx-auto rounded-2xl overflow-hidden border-2 border-blue-400 shadow-md bg-white">
+            <img
+              src={officerImg}
+              alt="Officer Profile"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200";
+              }}
+            />
           </div>
-          <h2 className="text-base font-bold text-slate-900">{officer?.name || "Officer Sharma"}</h2>
-          <p className="text-xs font-semibold text-blue-900">{officer?.role || "Enforcement Officer"}</p>
-          <p className="text-[11px] font-mono text-slate-400 mt-0.5">ID: {officer?.officerId || "LM/EG/2026/1001"}</p>
+
+          <div>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+              {officer?.name || "Officer Sharma"}
+            </h2>
+            <p className="text-xs font-bold text-blue-600 mt-0.5">
+              {officer?.role || "Enforcement Officer"}
+            </p>
+          </div>
+
+          {/* Badge ID Tag Pill */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0c1322] text-white rounded-full text-xs font-mono font-bold shadow-xs">
+            <Briefcase className="w-3.5 h-3.5 text-blue-300" />
+            <span>ID: {officer?.officerId || "INS-7721"}</span>
+          </div>
+
+          {/* Department & Contact Metadata Container */}
+          <div className="bg-white rounded-xl p-4 text-left space-y-2 border border-blue-100 text-xs shadow-2xs">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block font-mono">DEPARTMENT</span>
+              <span className="font-extrabold text-slate-900">{officer?.department || "Legal Metrology Division"}</span>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block font-mono">EMAIL</span>
+              <span className="font-semibold text-slate-800">{officer?.email || "o.sharma@gov.metrology.in"}</span>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block font-mono">JURISDICTION</span>
+              <span className="font-bold text-slate-900 flex items-center gap-1 mt-0.5">
+                <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span>Northern District, Sector 4</span>
+              </span>
+            </div>
+          </div>
+
         </div>
 
-        {/* Officer Details Grid */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2">
-            Official Details
-          </h3>
+        {/* Options List Cards */}
+        <div className="space-y-2.5">
 
-          <div className="flex items-center justify-between text-xs py-1">
-            <span className="text-slate-500 flex items-center gap-2">
-              <Shield className="w-4 h-4 text-blue-900" /> Department
-            </span>
-            <span className="font-semibold text-slate-900">{officer?.department || "Legal Metrology"}</span>
-          </div>
-
-          <div className="flex items-center justify-between text-xs py-1">
-            <span className="text-slate-500 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-blue-900" /> Email
-            </span>
-            <span className="font-semibold text-slate-900">{officer?.email || "officer.sharma@gov.in"}</span>
-          </div>
-
-          <div className="flex items-center justify-between text-xs py-1">
-            <span className="text-slate-500 flex items-center gap-2">
-              <Phone className="w-4 h-4 text-blue-900" /> Phone
-            </span>
-            <span className="font-semibold text-slate-900">{officer?.phone || "+91 96765 43210"}</span>
-          </div>
-
-          <div className="flex items-center justify-between text-xs py-1">
-            <span className="text-slate-500 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-blue-900" /> Location
-            </span>
-            <span className="font-semibold text-slate-900">{officer?.location || "New Delhi, India"}</span>
-          </div>
-        </div>
-
-        {/* Settings Links */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
-          
-          <button 
-            onClick={() => showToast('Change password prompt sent to registered email')}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors"
+          {/* Card 1: Security Password */}
+          <button
+            onClick={() => showToast('Redirecting to Security Credentials')}
+            className="w-full p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:bg-slate-50 transition-all group"
           >
-            <span className="text-xs font-bold text-slate-800 flex items-center gap-2.5">
-              <Key className="w-4 h-4 text-slate-500" /> Change Password
-            </span>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                <Key className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-xs font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">
+                  Security Password
+                </h3>
+                <p className="text-[11px] text-slate-500 font-medium">Update your access credentials</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
 
-          <button 
-            onClick={() => showToast('App Settings: Legal Metrology Rules 2011 v2.4 (2026)')}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors"
+          {/* Card 2: System Config */}
+          <button
+            onClick={() => navigate('/settings')}
+            className="w-full p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:bg-slate-50 transition-all group"
           >
-            <span className="text-xs font-bold text-slate-800 flex items-center gap-2.5">
-              <Settings className="w-4 h-4 text-slate-500" /> App Settings
-            </span>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                <SettingsIcon className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-xs font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">
+                  System Config
+                </h3>
+                <p className="text-[11px] text-slate-500 font-medium">App preferences and notifications</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
 
-          <button 
-            onClick={() => showToast('Legal Metrology Compliance System v2.6 (Govt of India)')}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors"
+          {/* Card 3: About */}
+          <button
+            onClick={() => showToast('Legal Metrology Rules 2011 Engine v4.2.0')}
+            className="w-full p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:bg-slate-50 transition-all group"
           >
-            <span className="text-xs font-bold text-slate-800 flex items-center gap-2.5">
-              <Info className="w-4 h-4 text-slate-500" /> About Us
-            </span>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
-          </button>
-
-          {/* Logout */}
-          <button 
-            onClick={handleLogout}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-rose-50 text-left transition-colors"
-          >
-            <span className="text-xs font-bold text-rose-600 flex items-center gap-2.5">
-              <LogOut className="w-4 h-4 text-rose-600" /> Logout
-            </span>
-            <ChevronRight className="w-4 h-4 text-rose-400" />
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                <Info className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-xs font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors">
+                  About
+                </h3>
+                <p className="text-[11px] text-slate-500 font-medium">App version and legal policies</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
 
         </div>
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="w-full py-3.5 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-rose-600 font-extrabold text-xs rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2 uppercase tracking-wider"
+        >
+          <LogOut className="w-4 h-4 text-rose-600" />
+          <span>Logout</span>
+        </button>
 
       </div>
 
-      {/* Bottom Nav */}
       <BottomNav />
 
     </div>

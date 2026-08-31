@@ -8,35 +8,32 @@ export default function BottomNav() {
 
   const currentPath = location.pathname;
 
-  // Do not render bottom navigation on auth screens
   if (['/login', '/register'].includes(currentPath)) {
     return null;
   }
 
   const navItems = [
     { label: 'Home', path: '/dashboard', icon: Home },
-    { label: 'Scan', path: '/scan', icon: Scan, isPrimary: true },
+    { label: 'Scan', path: '/scan', icon: Scan },
     { label: 'History', path: '/history', icon: History },
     { label: 'Profile', path: '/profile', icon: User }
   ];
 
   return (
-    <nav className="sticky bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2 flex justify-around items-center z-40 shadow-lg shrink-0">
+    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-200/90 h-16 flex items-center justify-around z-40 select-none px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = currentPath === item.path;
 
-        if (item.isPrimary) {
+        if (isActive) {
           return (
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="flex flex-col items-center justify-center -mt-4 group"
+              className="bg-blue-600 text-white rounded-2xl px-4 py-2 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 border border-blue-500"
             >
-              <div className={`p-3 rounded-full shadow-lg transition-transform active:scale-95 ${isActive ? 'bg-blue-900 text-white ring-4 ring-blue-100' : 'bg-blue-800 text-white hover:bg-blue-900'}`}>
-                <Icon className="w-6 h-6" />
-              </div>
-              <span className={`text-[11px] font-semibold mt-1 ${isActive ? 'text-blue-900' : 'text-slate-500'}`}>
+              <Icon className="w-4 h-4 stroke-[2.5]" />
+              <span className="text-xs font-extrabold tracking-wide font-sans">
                 {item.label}
               </span>
             </button>
@@ -47,10 +44,10 @@ export default function BottomNav() {
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-colors ${isActive ? 'text-blue-900 font-bold' : 'text-slate-500 hover:text-slate-800'}`}
+            className="flex flex-col items-center justify-center text-slate-400 hover:text-slate-900 transition-all active:scale-95 py-1 px-3"
           >
-            <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
-            <span className={`text-[11px] mt-1 ${isActive ? 'font-bold' : 'font-normal'}`}>
+            <Icon className="w-5 h-5 stroke-[2] mb-0.5" />
+            <span className="text-[10px] font-bold tracking-tight font-sans">
               {item.label}
             </span>
           </button>
